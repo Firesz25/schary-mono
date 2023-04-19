@@ -1,0 +1,5 @@
+{% extends "layoute.html.tera" %}
+{% block main %}
+<div class="text-center">witaj: {{ user }}</div>
+<a class="text-center" href="/login">login</a>
+{% endblock main %}

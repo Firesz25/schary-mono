@@ -1,0 +1,25 @@
+version: '3'
+services:
+  schary-mono:
+    image: schary-mono
+    container_name: schary-mono
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+    ports:
+      - "30000:30000"
+  maridb:
+    image: mariadb:11.0-rc
+    environment:
+      MYSQL_ROOT_PASSWORD: Lubricate-Macaroni7-Remember
+      MYSQL_DATABASE: schary
+      MYSQL_USER: Richly7724
+      MYSQL_PASSWORD: Visor-Unearth-Atrocious5
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  redis:
+    image: redis:7-bullseye
