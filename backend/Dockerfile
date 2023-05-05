@@ -8,8 +8,8 @@ FROM rust:1-slim-bullseye AS builder
 # Download crates-io index and fetch dependency code.
 # This step avoids needing to spend time on every build downloading the index
 # which can take a long time within the docker context. Docker will cache it.
-RUN USER=root cargo new --bin schary-mono
-WORKDIR /schary-mono
+RUN USER=root cargo new --bin schary-backend
+WORKDIR /schary-backend
 RUN USER=root cargo new --bin migration
 COPY Cargo.toml Cargo.toml
 COPY migration/Cargo.toml migration/Cargo.toml
@@ -34,7 +34,7 @@ FROM debian:bullseye-slim
 WORKDIR /app
 
 # copy server binary from build stage
-COPY --from=builder /schary-mono/target/release/schary-mono schary-mono
+COPY --from=builder /schary-backend/target/release/schary-backend schary-backend
 
 # set user to non-root unless root is required for your app
 USER 1001
@@ -43,4 +43,4 @@ USER 1001
 EXPOSE 30000
 
 # run server
-CMD [ "/app/schary-mono" ]
+CMD [ "/app/schary-backend" ]

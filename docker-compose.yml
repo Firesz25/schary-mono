@@ -1,17 +1,20 @@
 version: '3'
+volumes:
+   data:
 services:
-  schary-mono:
-    image: schary-mono
+  schary-mono-backend:
+    image: schary-mono-backend
     container_name: schary-mono
     build:
-      context: ./
+      context: ./backend
       dockerfile: Dockerfile
     depends_on:
       - redis
     ports:
       - "30000:30000"
   maridb:
-    image: mariadb:11.0-rc
+    image: mariadb:10.11
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: Lubricate-Macaroni7-Remember
       MYSQL_DATABASE: schary
