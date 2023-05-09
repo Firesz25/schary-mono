@@ -1,0 +1,2 @@
+database_url: mysql://Richly7724:Visor-Unearth-Atrocious5@mariadb/schary
+redis_url: redis://127.0.0.1:6379

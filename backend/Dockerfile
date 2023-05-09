@@ -1,46 +1,36 @@
-# NB: This is not a production-grade Dockerfile.
+FROM lukemathwalker/cargo-chef:latest-rust-slim-bullseye AS chef
+WORKDIR /app
 
-#################
-## build stage ##
-#################
-FROM rust:1-slim-bullseye AS builder
-
-# Download crates-io index and fetch dependency code.
-# This step avoids needing to spend time on every build downloading the index
-# which can take a long time within the docker context. Docker will cache it.
-RUN USER=root cargo new --bin schary-backend
-WORKDIR /schary-backend
-RUN USER=root cargo new --bin migration
+FROM chef AS planner
 COPY Cargo.toml Cargo.toml
+COPY Cargo.lock Cargo.lock
 COPY migration/Cargo.toml migration/Cargo.toml
-RUN cargo build --release
-RUN rm src/*.rs
-RUN rm migration/src/*.rs
-# RUN cargo fetch
-
-# copy app files
+COPY migration/Cargo.lock migration/Cargo.lock
 COPY src src
 COPY migration/src migration/src
 COPY templates templates
 COPY Config.yaml Config.yaml
+RUN cargo chef prepare --recipe-path recipe.json
 
-# compile app
+FROM chef AS builder 
+COPY --from=planner /app/recipe.json recipe.json
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --release --recipe-path recipe.json
+# Build application
+COPY Cargo.toml Cargo.toml
+COPY Cargo.lock Cargo.lock
+COPY migration/Cargo.toml migration/Cargo.toml
+COPY migration/Cargo.lock migration/Cargo.lock
+COPY src src
+COPY migration/src migration/src
+COPY templates templates
+COPY Config.yaml Config.yaml
 RUN cargo build --release
 
-###############
-## run stage ##
-###############
-FROM debian:bullseye-slim
+# We do not need the Rust toolchain to run the binary!
+FROM debian:bullseye-slim AS runtime
 WORKDIR /app
-
-# copy server binary from build stage
-COPY --from=builder /schary-backend/target/release/schary-backend schary-backend
-
-# set user to non-root unless root is required for your app
-USER 1001
-
-# indicate what port the server is running on
-EXPOSE 30000
-
-# run server
-CMD [ "/app/schary-backend" ]
+COPY --from=builder /app/target/release/schary-backend schary-backend
+COPY templates templates
+COPY Config.yaml Config.yaml
+ENTRYPOINT ["./schary-backend"]
