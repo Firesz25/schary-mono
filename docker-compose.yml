@@ -1,6 +1,9 @@
 version: '3'
 volumes:
    data:
+networks:
+  mariadbnet:
+  redisnet:
 services:
   schary-mono-backend:
     image: schary-mono-backend
@@ -10,9 +13,13 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - redis
+      - mariadb
+    networks:
+      - redisnet
+      - mariadbnet
     ports:
       - "30000:30000"
-  maridb:
+  mariadb:
     image: mariadb:10.11
     restart: always
     environment:
@@ -22,7 +29,14 @@ services:
       MYSQL_PASSWORD: Visor-Unearth-Atrocious5
     volumes:
       - data:/var/lib/mysql
+    networks:
+      - mariadbnet
     ports:
       - "3306:3306"
   redis:
     image: redis:7-bullseye
+    restart: always
+    networks:
+      - redisnet
+    ports:
+      - '6379:6379'
