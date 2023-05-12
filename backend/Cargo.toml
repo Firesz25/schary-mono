@@ -14,6 +14,7 @@ actix-identity = "0.5.2"
 actix-multipart = "0.6.0"
 actix-session = { version = "0.7.2", features = ["cookie-session"] }
 actix-web = "4.3.1"
+actix-web-lab = "0.19.1"
 apalis = { version = "0.3.6", features = ["redis"] }
 argon2 = "0.5.0"
 chrono = { version = "0.4.24", features = ["serde"] }
@@ -21,12 +22,12 @@ lettre = { version = "0.10.4", default-features = false, features = ["tokio1", "
 opentelemetry = { version = "0.18", features = ["rt-tokio-current-thread", "metrics"] }
 opentelemetry-prometheus = "0.11"
 redis = { version = "0.23.0", features = ["tokio-rustls", "tokio-comp"] }
-sea-orm = { version = "0.11.2", features = ["runtime-actix-rustls", "sqlx-mysql", "macros"] }
-serde = { version = "1.0.160", features = ["derive"] }
+sea-orm = { version = "0.11.3", features = ["runtime-actix-rustls", "sqlx-mysql", "macros"] }
+serde = { version = "1.0.162", features = ["derive"] }
 serde_yaml = "0.9.21"
 tera = "1.18.1"
 thiserror = "1.0.40"
 tracing = "0.1.37"
 tracing-actix-web = { version = "0.7.4", features = ["opentelemetry_0_18"] }
 tracing-opentelemetry = "0.18"
-tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
